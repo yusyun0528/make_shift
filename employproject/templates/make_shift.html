@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block header%}
+<div class="alert alert-primary" role="alert">
+  <h3>シフトが作成されました！</h3>
+</div>
+{% endblock header %}
+
+
+{% block content %}
+<div class="alert alert-success alert-dismissible" role="alert">
+<a href="http://127.0.0.1:8000/media/{{ user.username }}さんのシフト表.xls">ダウンロード</a>
+</div> 
+{% endblock content %}

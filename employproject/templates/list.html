@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block header%}
+<div class="alert alert-primary" role="alert">
+  <h3>従業員一覧</h3>
+</div>
+{% endblock header %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<div class='container'>
+    {% for item in object_list %}
+    <div class="alert alert-success" role="alert">
+    <p>名前：<a href="{% url 'update' item.pk %}">{{ item.worker_name }}</a></p>
+    {% if item.manager %}
+    <p>マネージャー</p>
+    {% else %}
+    <p>非マネージャー</p>
+    {% endif %}
+    <p>勤務可能時間 </p>
+    {% if item.work_day0 %}
+    work_day0,
+    {% endif %}
+    {% if item.work_day1 %}
+    work_day1,
+    {% endif %}
+    {% if item.work_day2 %}
+    work_day2,
+    {% endif %}
+    {% if item.work_day3 %}
+    work_day3,
+    {% endif %}
+    {% if item.work_day4 %}
+    work_day4,
+    {% endif %}
+    {% if item.work_day5 %}
+    work_day5,
+    {% endif %}
+    {% if item.work_day6 %}
+    work_day6,
+    {% endif %}
+    {% if item.work_day7 %}
+    work_day7,
+    {% endif %}
+    {% if item.work_day8 %}
+    work_day8,
+    {% endif %}
+    {% if item.work_day9 %}
+    work_day9
+    {% endif %}
+    </div>
+    {% endfor %}
+    <a href="{% url 'logout' %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">logout</a>
+    <a href="{% url 'create' %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">従業員追加</a>
+    <a href="{% url 'make_shift' %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">作成開始</a>
+</div>
+</div>
+
+{% else %}
+<a href="{% url 'login' %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">please login</a>
+{% endif %}
+{% endblock content%}

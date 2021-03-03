@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block customcss %}
+<link href="{% static 'style.css'%}" rel="stylesheet">
+{% endblock customcss %}
+
+{% block header%}
+<div class="alert alert-primary" role="alert">
+  <h3>従業員作成画面</h3>
+</div>
+{% endblock header %}
+
+{%block content%}
+{% if user.is_authenticated %}
+<body>
+    
+    <div class="container alert alert-success" role="alert">
+    <form method="POST" enctype="multipart/form-data">{% csrf_token %}
+    <p>名前:<input type="text" name="worker_name"></p>    
+    <p>manager  <input type="checkbox" name="manager"></p>
+    <p>work_day0<input type="checkbox" name="work_day0"></p>
+    <p>work_day1<input type="checkbox" name="work_day1"></p>
+    <p>work_day2<input type="checkbox" name="work_day2"></p>
+    <p>work_day3<input type="checkbox" name="work_day3"></p>
+    <p>work_day4<input type="checkbox" name="work_day4"></p>
+    <p>work_day5<input type="checkbox" name="work_day5"></p>
+    <p>work_day6<input type="checkbox" name="work_day6"></p>
+    <p>work_day7<input type="checkbox" name="work_day7"></p>
+    <p>work_day8<input type="checkbox" name="work_day8"></p>
+    <p>work_day9<input type="checkbox" name="work_day9"></p>        
+    
+    <input type="hidden" name="employer" value="{{ user.username }}">
+    <input class="create-btn" style="" type="submit" value="追加">
+    </form>
+    </div>
+
+</body>
+{% else %}
+please login
+{% endif %}
+
+{% endblock content %}
