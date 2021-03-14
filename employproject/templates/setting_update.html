@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block header%}
+<div class="alert alert-primary" role="alert">
+  <h3>従業員詳細</h3>
+</div>
+{% endblock header %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<div class='container'>
+  <form action="{% url 'setting_update' setting.pk %}" method="POST">{% csrf_token %}
+  <div class="alert alert-success" role="alert">
+    <p>必要人数:{{ form.need_people }}</p>            
+    <p>時間数:{{ form.times }}</p>    
+    <p>マネージャー機能:{{ form.manager }}</p>               
+    <input type="hidden" name="employer" value="{{ user.username }}">
+  <button class="btn btn-primary" type="submit">更新</button>
+  </form>  
+  </div>  
+  <a href="{% url 'logout' %}" class="btn btn-primary" >logout</a>
+</div>
+{% else %}
+<a href="{% url 'login' %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">ログインしてください</a>
+{% endif %}
+{% endblock content%}

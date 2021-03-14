@@ -3,30 +3,37 @@ from deap import base
 from deap import creator
 from deap import tools
 
-from django.shortcuts import render ,redirect ,get_object_or_404
-from django.db import IntegrityError
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.db import IntegrityError
+from django.shortcuts import render ,redirect ,get_object_or_404
 from django.views.decorators.http import require_POST
-from .forms import EmployForm
-from .models import EmployModel
+from .forms import EmployForm ,ShiftForm
+from .models import EmployModel ,ShiftModel
 from django.views.generic import CreateView ,UpdateView ,DeleteView
 from django.urls import reverse_lazy
 import pandas as pd
 
 
 # Create your views here.
+def home_func(request):
+    return render(request,'home.html',{'open_massage':''})
+
 def signup_func(request):
     if request.method == 'POST':
         username =request.POST['username']
         password =request.POST['password']
         try:
            user = User.objects.create_user(username, '', password)
+           signup_ok = True
+           return render( request,'home.html',{'siginup_massagae':'新規登録できました。ログインして初期設定を行いましょう。','signup_ok':signup_ok}) 
         except IntegrityError:
             return render(request, 'signup.html',{'error':'このユーザーは既に登録されています。違う名前で登録してください。'})
-    return render(request, 'signup.html',{'context':' 新規登録されました'})   
+    return render(request, 'signup.html',{'context':'名前とパスワードを設定しましょう'})   
 
 def login_func(request):
     if request.method =='POST':
@@ -35,23 +42,37 @@ def login_func(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('list')
+            return redirect('require')
         else:
-            return render(request, 'login.html',{'context':'not logged in'})
-    return render(request, 'login.html',{})
+            return render(request, 'login.html',{'context':'ユーザー名かパスワードが間違っています。'})
+    return render(request, 'login.html',{'context':'ユーザー名とパスワードを入力してください。'})
 
+#従業員リストを表示
 @login_required
 def list_func(request):
-    user=request.user    
+    user=request.user        
     object_list = EmployModel.objects.filter(employer=user.username)
-    return render(request, 'list.html',{'object_list':object_list })
+    setting = ShiftModel.objects.get(employer=user.username)
+    return render(request, 'list.html',{'object_list':object_list ,'setting':setting})
 
 def logout_func(request):
     logout(request)
-    return redirect('login')
+    return redirect('home')
 
+#初回ログイン時に設定の決定を求める
+def setting_require(request):
+    user=request.user    
+    try:
+        first_setting = ShiftModel.objects.get(employer=user.username)
+    except ObjectDoesNotExist:
+        return redirect('setting') 
+    return redirect('list')
 
+#従業員情報の修正、削除
+@login_required
 def update_func(request, pk):
+    user=request.user 
+    setting = ShiftModel.objects.get(employer=user.username)
     worker = get_object_or_404(EmployModel, pk=pk)
     if request.method == "POST":
         form = EmployForm(data=request.POST, instance=worker)
@@ -60,22 +81,57 @@ def update_func(request, pk):
             return redirect('list')
     else:
         form = EmployForm(instance=worker)
-    return render(request, 'update.html', {'form': form, 'worker':worker })
+    return render(request, 'update.html', {'form': form, 'worker':worker ,'setting':setting})
+
+#設定の変更
+@login_required
+def setting_update(request, pk):
+    setting = get_object_or_404(ShiftModel, pk=pk)
+    if request.method == "POST":
+        form = ShiftForm(data=request.POST, instance=setting)
+        if form.is_valid():
+            form.save()
+            return redirect('list')
+    else:
+        form = ShiftForm(instance=setting)
+    return render(request, 'setting_update.html', {'form': form, 'setting':setting })
+
+class SettingCreate(CreateView):
+    template_name='setting.html'
+    model = ShiftModel
+    fields = ('need_people','times','manager','employer')
+    success_url = reverse_lazy('list')
 
 class EmployCreate(CreateView):
     template_name='create.html'
     model = EmployModel
     fields = ( 'worker_name','work_day0','work_day1','work_day2','work_day3','work_day4','work_day5','work_day6',
-    'work_day7', 'work_day8','work_day9','manager','employer')
+    'work_day7', 'work_day8','work_day9','work_day10','work_day11','work_day12','work_day13','work_day14','work_day15',
+    'work_day16','work_day17','work_day18','work_day19','manager','employer')
     success_url = reverse_lazy('list')
 
+#従業員の追加
+@login_required
+def create_func(request):
+    user=request.user    
+    setting = ShiftModel.objects.get(employer=user.username)
+    if request.method == "POST": 
+        form = EmployForm(data=request.POST)       
+        if form.is_valid():
+            form.save()
+            return redirect('list')
+    else:
+        form = EmployForm()
+    return render(request, 'create.html', {'form': form, 'setting':setting })
 
-@require_POST
+#従業員の削除
 def delete_func(request, pk):
     worker = get_object_or_404(EmployModel, pk=pk)
     worker.delete()
     return redirect('list')
 
+#シフト作成
+@login_required
 def make_shift_func(request):    
     class Employee():
         def __init__(self,no,name,grade,wills):
@@ -94,25 +150,45 @@ def make_shift_func(request):
     for i in object_list:
         can_wills=[]
         if i.work_day0:
-            can_wills.append('0')
-        if i.work_day1:
             can_wills.append('1')
-        if i.work_day2:
+        if i.work_day1:
             can_wills.append('2')
-        if i.work_day3:
+        if i.work_day2:
             can_wills.append('3')
-        if i.work_day4:
+        if i.work_day3:
             can_wills.append('4')
-        if i.work_day5:
+        if i.work_day4:
             can_wills.append('5')
-        if i.work_day6:
+        if i.work_day5:
             can_wills.append('6')
-        if i.work_day7:
+        if i.work_day6:
             can_wills.append('7')
-        if i.work_day8:
+        if i.work_day7:
             can_wills.append('8')
-        if i.work_day9:
+        if i.work_day8:
             can_wills.append('9')
+        if i.work_day9:
+            can_wills.append('10')
+        if i.work_day10:
+            can_wills.append('11')
+        if i.work_day11:
+            can_wills.append('12')
+        if i.work_day12:
+            can_wills.append('13')
+        if i.work_day13:
+            can_wills.append('14')
+        if i.work_day14:
+            can_wills.append('15')
+        if i.work_day15:
+            can_wills.append('16')
+        if i.work_day16:
+            can_wills.append('17')
+        if i.work_day17:
+            can_wills.append('18')
+        if i.work_day18:
+            can_wills.append('19')
+        if i.work_day19:
+            can_wills.append('20')
         if i.manager:
             manager = True
         else:
@@ -127,9 +203,15 @@ def make_shift_func(request):
 
    
     class Shift():
-        Shift_Box=['0','1','2','3','4','5','6','7','8','9']
-        Need_People=[7,7,7,7,7,7,7,7,7,7]
+        Shift_Box=[]
+        Need_People=[]
+        setting = ShiftModel.objects.get(employer=user.username)
+        for i in range(setting.times):
+            Shift_Box.append(str(i+1))
+
         time=len(Shift_Box)
+        for i in range(time):
+            Need_People.append(setting.need_people)
         member=len(employees)
         def __init__(self, list):
             if list == None:
@@ -252,8 +334,12 @@ def make_shift_func(request):
         def rest_average(self):
             print('作業中')
     
-    #-1000.0:いけない日に入れる、-50:先輩がいない、-100:人数が足りない(多い)
-    creator.create("FitnessMax", base.Fitness, weights=(-100000.0,-50.0,-100.0))
+    #-100000.0:いけない日に入れる、-50:マネージャーがいない、-100:人数が足りない(多い)
+    setting = ShiftModel.objects.get(employer=user.username)
+    if setting.manager:
+        creator.create("FitnessMax", base.Fitness, weights=(-100000.0,-100.0,-50.0))
+    else:
+        creator.create("FitnessMax", base.Fitness, weights=(-100000.0,-100.0,))
     creator.create("Individual", list, fitness=creator.FitnessMax)
 
     toolbox = base.Toolbox()
@@ -264,11 +350,16 @@ def make_shift_func(request):
     #目的関数
     def evalOneMax(individual):
         s=Shift(individual)
-        s.employees=employees
-        not_hope_count=sum(s.abs_people_between_need_and_actual())/s.member*s.time
-        not_senior=len(s.no_senior_box()) /s.time
+        setting = ShiftModel.objects.get(employer=user.username)
+        s.employees=employees        
+        not_hope_count=sum(s.abs_people_between_need_and_actual())/s.member*s.time 
         required_people=s.not_applicated_assign() /s.member*s.time
-        return not_hope_count, not_senior, required_people,
+        if setting.manager:
+            not_senior=len(s.no_senior_box()) /s.time        
+            return not_hope_count, required_people, not_senior
+        else:
+            return not_hope_count, required_people
+            
 
 
     toolbox.register("evaluate", evalOneMax)
@@ -285,7 +376,7 @@ def make_shift_func(request):
 
     # 初期集団を生成する
     pop = toolbox.population(n=300)
-    CXPB, MUTPB, NGEN = 0.6, 0.5, 10 # 交差確率、突然変異確率、進化計算のループ回数
+    CXPB, MUTPB, NGEN = 0.6, 0.5, 500 # 交差確率、突然変異確率、進化計算のループ回数
     print("進化開始")
     # 初期集団の個体を評価する
     fitnesses = list(map(toolbox.evaluate, pop))

@@ -12,51 +12,124 @@
     {% for item in object_list %}
     <div class="alert alert-success" role="alert">
     <p>名前：<a href="{% url 'update' item.pk %}">{{ item.worker_name }}</a></p>
+    {% if setting.manager %}
     {% if item.manager %}
     <p>マネージャー</p>
     {% else %}
     <p>非マネージャー</p>
     {% endif %}
+    {% endif %}
     <p>勤務可能時間 </p>
+    <p>{% if setting.times >= 1 %}
     {% if item.work_day0 %}
-    work_day0,
+    <button type="button" class="btn btn-success"disabled>時間1</button>
     {% endif %}
+    {% endif %}
+    {% if setting.times >= 2 %}
     {% if item.work_day1 %}
-    work_day1,
+    <button type="button" class="btn btn-success"disabled>時間2</button>
     {% endif %}
+    {% endif %}
+    {% if setting.times >= 3 %}
     {% if item.work_day2 %}
-    work_day2,
+    <button type="button" class="btn btn-success"disabled>時間3</button>
     {% endif %}
+    {% endif %}
+    {% if setting.times >= 4 %}
     {% if item.work_day3 %}
-    work_day3,
+    <button type="button" class="btn btn-success"disabled>時間4</button>
     {% endif %}
-    {% if item.work_day4 %}
-    work_day4,
     {% endif %}
+    {% if setting.times >= 5 %}
+    {% if item.work_day4 %}    
+    <button type="button" class="btn btn-success"disabled>時間5</button>
+    {% endif %}
+    {% endif %}
+    {% if setting.times >= 6 %}
     {% if item.work_day5 %}
-    work_day5,
+    <button type="button" class="btn btn-success"disabled>時間6</button>
     {% endif %}
+    {% endif %}
+    {% if setting.times >= 7 %}
     {% if item.work_day6 %}
-    work_day6,
+    <button type="button" class="btn btn-success"disabled>時間7</button>
     {% endif %}
+    {% endif %}
+    {% if setting.times >= 8 %}
     {% if item.work_day7 %}
-    work_day7,
+    <button type="button" class="btn btn-success"disabled>時間8</button>
     {% endif %}
+    {% endif %}
+    {% if setting.times >= 9 %}
     {% if item.work_day8 %}
-    work_day8,
+    <button type="button" class="btn btn-success"disabled>時間9</button>
     {% endif %}
+    {% endif %}
+    {% if setting.times >= 10 %}
     {% if item.work_day9 %}
-    work_day9
+    <button type="button" class="btn btn-success"disabled>時間10</button></p>
     {% endif %}
+    {% endif %}
+    {% if setting.times >= 11 %}
+    {% if item.work_day10 %}
+    <p><button type="button" class="btn btn-success"disabled>時間11</button> 
+    {% endif %}
+    {% endif %}
+    {% if setting.times >= 12 %}
+    {% if item.work_day11 %}
+    <button type="button" class="btn btn-success"disabled>時間12</button>
+    {% endif %}
+    {% endif %}
+    {% if setting.times >= 13 %}
+    {% if item.work_day12 %}
+    <button type="button" class="btn btn-success"disabled>時間13</button>
+    {% endif %}
+    {% endif %}
+    {% if setting.times >= 14 %}
+    {% if item.work_day13 %}
+    <button type="button" class="btn btn-success"disabled>時間14</button>
+    {% endif %}
+    {% endif %}
+    {% if setting.times >= 15 %}
+    {% if item.work_day14 %}
+    <button type="button" class="btn btn-success"disabled>時間15</button>
+    {% endif %}
+    {% endif %}
+    {% if setting.times >= 16 %}
+    {% if item.work_day15 %}
+    <button type="button" class="btn btn-success"disabled>時間16</button>
+    {% endif %}
+    {% endif %}
+    {% if setting.times >= 17 %}
+    {% if item.work_day16 %}
+    <button type="button" class="btn btn-success"disabled>時間17</button>
+    {% endif %}
+    {% endif %}
+    {% if setting.times >= 18 %}
+    {% if item.work_day17 %}
+    <button type="button" class="btn btn-success"disabled>時間18</button>
+    {% endif %}
+    {% endif %}
+    {% if setting.times >= 19 %}
+    {% if item.work_day18 %}
+    <button type="button" class="btn btn-success"disabled>時間19</button>
+    {% endif %}
+    {% endif %}
+    {% if setting.times >= 20 %}
+    {% if item.work_day19 %}
+    <button type="button" class="btn btn-success"disabled>時間20</button></p>
+    {% endif %}
+    {% endif %}
+    
     </div>
-    {% endfor %}
-    <a href="{% url 'logout' %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">logout</a>
+  {% endfor %}  
+    <a href="{% url 'logout' %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">ログアウト</a>
     <a href="{% url 'create' %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">従業員追加</a>
     <a href="{% url 'make_shift' %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">作成開始</a>
-</div>
+    <a href="{% url 'setting_update' setting.pk %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">シフト設定</a>
 </div>
 
 {% else %}
-<a href="{% url 'login' %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">please login</a>
+<a href="{% url 'login' %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">ログインしてください</a>
 {% endif %}
-{% endblock content%}
+{% endblock content %}

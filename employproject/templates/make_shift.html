@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header%}
+
 <div class="alert alert-primary" role="alert">
   <h3>シフトが作成されました！</h3>
 </div>
@@ -8,7 +9,19 @@
 
 
 {% block content %}
+{% if user.is_authenticated %}
+<div class='container'>
 <div class="alert alert-success alert-dismissible" role="alert">
+<p><img src="http://127.0.0.1:8000/media/完成.png" width=600px float="center"></p>
+シフトの作成が完了しました。こちらからExcelファイルをダウンロードしましょう！
 <a href="http://127.0.0.1:8000/media/{{ user.username }}さんのシフト表.xls">ダウンロード</a>
+</div>
+<a href="{% url 'home' %}" class="btn btn-primary" >ホームへ戻る</a>
+<a href="{% url 'list' %}" class="btn btn-primary" >従業員リストへ戻る</a>
 </div> 
+
+{% else %}
+<a href="{% url 'login' %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">ログインしてください</a>
+{% endif %}
+
 {% endblock content %}

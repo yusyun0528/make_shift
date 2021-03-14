@@ -1,39 +1,96 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
+{% block customcss %}
+<link href="{% static 'style.css'%}" rel="stylesheet">
+{% endblock customcss %}
+
 {% block header%}
 <div class="alert alert-primary" role="alert">
   <h3>従業員詳細</h3>
 </div>
 {% endblock header %}
 
+<body>
 {% block content %}
 {% if user.is_authenticated %}
-<div class='container'>
-  <form action="{% url 'update' worker.pk %}" method="POST">{% csrf_token %}
-  <div class="alert alert-success" role="alert">
-    <p>名前：{{ form.worker_name }}
+<div class="container alert alert-success">
+  <form action="{% url 'update' worker.pk %}" method="POST">{% csrf_token %}  
+    <p>名前：{{ form.worker_name }}</p>
+    {% if setting.manager %}
     <p>マネージャー{{ form.manager }}</p>
-    <p>work_day0{{ form.work_day0 }}</p>
-    <p>work_day0{{ form.work_day1 }}</p>
-    <p>work_day0{{ form.work_day2 }}</p>
-    <p>work_day0{{ form.work_day3 }}</p>
-    <p>work_day0{{ form.work_day4 }}</p>
-    <p>work_day0{{ form.work_day5 }}</p>
-    <p>work_day0{{ form.work_day6 }}</p>
-    <p>work_day0{{ form.work_day7 }}</p>
-    <p>work_day0{{ form.work_day8 }}</p>
-    <p>work_day0{{ form.work_day9 }}</p>
+    {% endif %}
+    {% if setting.times >= 1 %}
+    <p>時間1 {{ form.work_day0 }}</p>
+    {% endif %}
+    {% if setting.times >= 2 %}
+    <p>時間2 {{ form.work_day1 }}</p>
+    {% endif %}
+    {% if setting.times >= 3 %}
+    <p>時間3 {{ form.work_day2 }}</p>
+    {% endif %}
+    {% if setting.times >= 4 %}
+    <p>時間4 {{ form.work_day3 }}</p>
+    {% endif %}
+    {% if setting.times >= 5 %}
+    <p>時間5 {{ form.work_day4 }}</p>
+    {% endif %}
+    {% if setting.times >= 6 %}
+    <p>時間6 {{ form.work_day5 }}</p>
+    {% endif %}
+    {% if setting.times >= 7 %}
+    <p>時間7 {{ form.work_day6 }}</p>
+    {% endif %}
+    {% if setting.times >= 8 %}
+    <p>時間8 {{ form.work_day7 }}</p>
+    {% endif %}
+    {% if setting.times >= 9 %}
+    <p>時間9 {{ form.work_day8 }}</p>
+    {% endif %}
+    {% if setting.times >= 10 %}
+    <p>時間10{{ form.work_day9 }}</p>
+    {% endif %}
+    {% if setting.times >= 11 %}
+    <p>時間11{{ form.work_day10 }}</p>
+    {% endif %}
+    {% if setting.times >= 12 %}
+    <p>時間12{{ form.work_day11 }}</p>
+    {% endif %}
+    {% if setting.times >= 13 %}
+    <p>時間13{{ form.work_day12 }}</p>
+    {% endif %}
+    {% if setting.times >= 14 %}
+    <p>時間14{{ form.work_day13 }}</p>
+    {% endif %}
+    {% if setting.times >= 15 %}
+    <p>時間15{{ form.work_day14 }}</p>
+    {% endif %}
+    {% if setting.times >= 16 %}
+    <p>時間16{{ form.work_day15 }}</p>
+    {% endif %}
+    {% if setting.times >= 17 %}
+    <p>時間17{{ form.work_day16 }}</p>
+    {% endif %}
+    {% if setting.times >= 18 %}
+    <p>時間18{{ form.work_day17 }}</p>
+    {% endif %}
+    {% if setting.times >= 19 %}
+    <p>時間19{{ form.work_day18 }}</p>
+    {% endif %}
+    {% if setting.times >= 20 %}
+    <p>時間20{{ form.work_day19 }}</p>
+    {% endif %} 
     <input type="hidden" name="employer" value="{{user.username}}">
-  <button class="btn btn-primary" type="submit">更新</button>
-  </form>
-  <form method="post" action="{% url 'delete' worker.pk %}">{% csrf_token %}
-  <button class="btn btn-primary" type="submit"  onclick='return confirm("本当に削除しますか？");'>削除</button>
-  </form>     
-  </div>  
-  <a href="{% url 'logout' %}" class="btn btn-primary" >logout</a>
+    <p><input class="btn btn-primary" type="submit" value="更新"></p>
+    </form>
+    <form method="post" action="{% url 'delete' worker.pk %}">{% csrf_token %}
+    <p><input class="btn btn-primary" type="submit"onclick='return confirm("本当に削除しますか？");' value="削除"></p>
+    </form>  
 </div>
 {% else %}
-please login
+<a href="{% url 'login' %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">ログインしてください</a>
 {% endif %}
 {% endblock content%}
+</body>
 

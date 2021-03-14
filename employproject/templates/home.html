@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block header%}
+<div class="alert alert-primary" role="alert">
+  <h3>遺伝的アルゴリズムによるシフトメイカーへようこそ！</h3>
+</div>
+{% endblock header %}
+
+{% block content %}
+<div class='container'>
+{% if signup_ok is not None %}
+<div class="alert alert-success">
+{{ siginup_massagae }}
+</div>
+{% endif %}
+<p><img src="http://127.0.0.1:8000/media/django.png" width=400px>
+   <img src="http://127.0.0.1:8000/media/deap.png" width=400px></p>
+<div class="alert alert-success alert-dismissible" role="alert">
+こんにちは！この度は私のポートフォリオを見てくださりありがとうございます。<br>
+pythonのdeapが持つ持遺伝的アルゴリズムとWebフレームワークのdjangoを掛け合わせたシフト作成アプリをぜひご覧ください!<br>
+まずはユーザー登録かサンプルアカウントでのログインをお願いします。
+
+</div>
+<a href="{% url 'signup' %}" class="btn btn-primary" >新規登録</a>
+<a href="{% url 'login' %}" class="btn btn-primary" >ログイン</a>
+</div>
+{% endblock content %}

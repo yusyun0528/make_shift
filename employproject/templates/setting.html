@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block customcss %}
+<link href="{% static 'style.css'%}" rel="stylesheet">
+{% endblock customcss %}
+
+{% block header%}
+<div class="alert alert-primary" role="alert">
+  <h3>シフト設定</h3>
+</div>
+{% endblock header %}
+
+{%block content%}
+{% if user.is_authenticated %}
+<body>
+    <p float="senter">最初にシフトの設定を行ってください</p>
+    <div class="container alert alert-success" role="alert">
+    <form method="POST" enctype="multipart/form-data">{% csrf_token %}    
+    <p>必要人数     <select required name="need_people">
+    <p><option  value="1">1</option>
+    <option  value="2">2</option>
+    <option  value="3">3</option>
+    <option  value="4">4</option>
+    <option  value="5">5</option>
+    <option  value="6">6</option>
+    <option  value="7">7</option>
+    <option  value="8">8</option>
+    <option  value="9">9</option>
+    <option  value="10">10</option>
+    <option  value="11">11</option>
+    <option  value="12">12</option>
+    <option  value="13">13</option>
+    <option  value="14">14</option>
+    <option  value="15">15</option>
+    <option  value="16">16</option>
+    <option  value="17">17</option>
+    <option  value="18">18</option>
+    <option  value="19">19</option>
+    <option  value="20">20</option>
+    </select></p>
+        
+    <p>時間数            
+    <select required name="times">
+    <option  value="1">1</option>
+    <option  value="2">2</option>
+    <option  value="3">3</option>
+    <option  value="4">4</option>
+    <option  value="5">5</option>
+    <option  value="6">6</option>
+    <option  value="7">7</option>
+    <option  value="8">8</option>
+    <option  value="9">9</option>
+    <option  value="10">10</option>
+    <option  value="11">11</option>
+    <option  value="12">12</option>
+    <option  value="13">13</option>
+    <option  value="14">14</option>
+    <option  value="15">15</option>
+    <option  value="16">16</option>
+    <option  value="17">17</option>
+    <option  value="18">18</option>
+    <option  value="19">19</option>
+    <option  value="20">20</option>
+    </select></p>    
+    <p float="left">マネージャー機能   <input type="checkbox" name="manager"></p>               
+    <input type="hidden" name="employer" value="{{ user.username }}">
+    <p><button class="btn btn-primary" type="submit">設定する</button></p>
+    </form>
+    </div>
+
+</body>
+{% else %}
+<a href="{% url 'login' %}" class="btn btn-info btn-lg active" role="button" aria-pressed="true">ログインしてください</a>
+{% endif %}
+
+{% endblock content %}
